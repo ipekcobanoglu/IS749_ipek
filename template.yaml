@@ -19,7 +19,7 @@ Resources:
     Properties:
       CodeUri: .
       Handler: tr.edu.metu.sm703.HomeController::index
-      Runtime: java11
+      Runtime: java17
       Architectures:
         - x86_64
       MemorySize: 512
