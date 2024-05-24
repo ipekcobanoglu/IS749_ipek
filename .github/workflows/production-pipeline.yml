@@ -1,0 +1,48 @@
+name: Terraform Workflow
+
+on:
+  push:
+    branches:
+      [ master ]
+
+jobs:
+  terraform-build:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      TF_VAR_enviroment: "prod"
+      BACKEND_FILE: "tf-backend-confs/prod.conf"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.8.4"
+
+      - name: Build
+        run: ./gradlew shadowJar
+
+      - name: Test
+        run: ./gradlew test
+
+      - name: Terraform Plan
+        run: |
+          terraform init -backend-config=$BACKEND_FILE
+          terraform plan
+
+      - name: Terraform Apply
+        run: |
+          terraform init -backend-config=$BACKEND_FILE
+          terraform apply -auto-approve
