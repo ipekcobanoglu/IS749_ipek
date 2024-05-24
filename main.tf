@@ -109,3 +109,5 @@ resource "aws_cloudwatch_metric_alarm" "gateway_error_rate" {
     Stage = "dev"
   }
 }
+
+
