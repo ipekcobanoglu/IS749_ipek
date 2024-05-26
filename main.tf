@@ -99,13 +99,13 @@ resource "aws_cloudwatch_metric_alarm" "gateway_error_rate" {
   metric_name         = "5XXError"
   namespace           = "AWS/ApiGateway"
   period              = 60
-  evaluation_periods  = 2
-  threshold           = 0.05
-  statistic           = "Average"
+  evaluation_periods  = 1
+  threshold           = 5
+  statistic           = "Sum"
   unit                = "Count"
 
   dimensions = {
-    ApiName = aws_api_gateway_rest_api.example_api.id
+    ApiName = aws_api_gateway_rest_api.example_api.name
     Stage = "dev"
   }
 }
